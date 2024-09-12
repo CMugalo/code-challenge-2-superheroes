@@ -71,7 +71,7 @@ The file `server/models.py` defines the model classes **without relationships**.
 Use the following commands to create the initial database `app.db`:
 
 ```console
-export FLASK_APP=server/app.py
+export FLASK_APP=server/app.py 
 flask db init
 flask db upgrade head
 ```
