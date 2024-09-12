@@ -110,7 +110,5 @@ api.add_resource(PowersData, '/powers')
 api.add_resource(PowerById, '/powers/<int:id>')
 api.add_resource(CreateHeroPower, '/hero_powers')
 
-
-
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
