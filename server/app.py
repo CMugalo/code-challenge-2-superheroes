@@ -18,27 +18,44 @@ app.json.compact = False
 migrate = Migrate(app, db)
 
 db.init_app(app)
+api = Api(app)
 
-@app.route('/')
-def index():
-    return '<h1>Code challenge</h1>'
+class Home(Resource):
+     def get(self):
+          return '<h1>Code challenge</h1>'
 
-@app.route('/heroes', methods=['GET'])
-def get_heroes():
-    heroes = Hero.query.all()
-    return jsonify([hero.to_dict(rules={'-hero_powers': True}) for hero in heroes])
+class HeroesData(Resource):
+     def get(self):
+        heroes = Hero.query.all()
+        return [hero.to_dict(rules={'-hero_powers': True}) for hero in heroes], 200
 
-@app.route('/heroes/<int:id>', methods=['GET'])
-def get_hero(id):
-    hero = db.session.get(Hero, id)
-    if hero is None:
+class IndividualHero(Resource):
+     def get(self, id):
+        hero = db.session.get(Hero, id)
+        if hero is None:
             return {"error": "Hero not found"}, 404
-    return jsonify(hero.to_dict())
+        return hero.to_dict(), 200
+          
 
-@app.route('/powers', methods=['GET'])
-def retrieve_powers():
-     powers = Power.query.all()
-     return jsonify([power.to_dict(rules={'-hero_powers': True}) for power in powers])
+class PowersData(Resource):
+    def get(self):
+        powers = Power.query.all()
+        return [power.to_dict(rules={'-hero_powers': True}) for power in powers], 200
+
+class PowerById(Resource):
+    def get(self, id):
+        power = db.session.get(Power, id)
+        if power is None:
+            return {"error": "Power not found"}, 404
+        return power.to_dict(rules={'-hero_powers': True}), 200
+    
+
+
+api.add_resource(Home, '/')
+api.add_resource(HeroesData, '/heroes')
+api.add_resource(IndividualHero, '/heroes/<int:id>')
+api.add_resource(PowersData, '/powers')
+api.add_resource(PowerById, '/powers/<int:id>')
 
 
 
